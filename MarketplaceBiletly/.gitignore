@@ -1,0 +1,5 @@
+.secret
+.projectId
+.projectSecretKey
+.env
+.node-modules
