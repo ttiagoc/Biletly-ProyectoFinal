@@ -30,8 +30,8 @@ const Home = ({ nft }) => {
     }
 
     const buyMarketItem = async (item) => {
-        console.log(ethers.utils.formatEther(item.totalPrice))
-        (await nft.sellTicket(item.idEntrada, {value: item.totalPrice})).wait();
+        console.log(ethers.utils.formatEther(item.totalPrice.toString()))
+        (await nft.sellTicket(item.idEntrada, {value:  ethers.utils.parseEther(item.totalPrice.toString())})).wait();
         loadMarketplaceItem();
     }
 
@@ -56,7 +56,6 @@ const Home = ({ nft }) => {
                                     <Card.Img variant="top" src={item.image} style={{objectFit: 'cover'}}/>
                                     <Card.Body color="secondary">
                                         <Card.Title>{item.name}</Card.Title>
-                                        <Card.Text>{item.description}</Card.Text>
                                     </Card.Body>
                                     <Card.Footer>
                                         <div className="d-grid">
