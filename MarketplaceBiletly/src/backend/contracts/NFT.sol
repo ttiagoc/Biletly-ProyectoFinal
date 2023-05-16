@@ -29,6 +29,12 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
         _ventaActiva = true;
     }
 
+    event Offered(
+        uint idEntrada,
+        uint precio,
+        address indexed vendedor       
+    );
+
     event Bought(
         uint idEntrada,
         uint precio,
@@ -52,6 +58,12 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
 
         _entradaVendida[tokenCount] = false;
         _propietarioEntrada[tokenCount] = msg.sender;
+
+        emit Offered(
+            tokenCount,
+            _precio,
+            payable(msg.sender)
+        );
 
         return tokenCount;
     }

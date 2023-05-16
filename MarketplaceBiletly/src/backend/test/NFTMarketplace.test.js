@@ -56,82 +56,73 @@ describe("NFTMarketplace", function (){
         });
     });
 
-    // describe("Making marketplace items", function (){
-    //     let price = 1;
-    //     let result;
+    describe("Making marketplace items", function (){
 
-    //     beforeEach(async function (){
-    //         await nft.connect(addr1).mint(URI);
-    //         await nft.connect(addr1).setApprovalForAll(marketplace.address, true);
-    //     });
+        let price = 1;
+        let result;
 
-    //     it("Should track newly created item", async function(){
-    //         await expect(marketplace.connect(addr1).makeItem(nft.address, 1, toWei(price)))
-    //         .to.emit(marketplace, "Offered")
-    //         .withArgs(
-    //             1,
-    //             nft.address,
-    //             1,
-    //             toWei(price),
-    //             addr1.address
-    //         );
+        //beforeEach(async function (){
+          //  await nft.connect(addr1).mint(URI, "Nuevo NFT", toWei(price));
+            // await nft.connect(addr1).setApprovalForAll(marketplace.address, true);
+        //});
 
-    //         expect(await nft.ownerOf(1)).to.equal(marketplace.address);
-    //         expect(await marketplace.itemCount()).to.equal(1)
-    //         const item = await marketplace.items(1);
-    //         expect(item.itemId).to.equal(1);
-    //         expect(item.nft).to.equal(nft.address);
-    //         expect(item.tokenId).to.equal(1);
-    //         expect(item.price).to.equal(toWei(price));
-    //         expect(item.sold).to.equal(false);
-    //     });
+        it("Should track newly created NFTF", async function(){
+            await expect(nft.connect(addr1).mint(URI, "Nuevo NFT", toWei(price)))
+            .to.emit(nft, "Offered")
+            .withArgs(
+                1,                
+                toWei(price),
+                addr1.address
+            );
 
-    //     it("Should fail if price is set to zero", async function (){
-    //         await expect(marketplace.connect(addr1).makeItem(
-    //             nft.address, 1, 0)).to.be.revertedWith("Price must be greater than zero");
-    //     });
-    // });
+            expect(await nft.ownerOf(1)).to.equal(addr1.address);
+            expect(await nft.tokenCount()).to.equal(1)
 
-    // describe("Purchasing marketplace items", function (){
+            const ticekt = await nft.entradas(1);
+            expect(ticekt.idEntrada).to.equal(1);
+            expect(ticekt.descripcion).to.equal("Nuevo NFT");
+            expect(ticekt.precio).to.equal(toWei(price));            
+        });
 
-    //     let price = 2;
-    //     let fee = (feePercent/100)*price;
-    //     let totalPriceInWei;
+        it("Should fail if price is set to zero", async function (){
+            await expect(nft.connect(addr1).mint(
+                URI, "Nuevo NFT", 0)).to.be.revertedWith("Price must be greater than zero");
+            });
+    });
 
-    //     beforeEach(async function(){
-    //         await nft.connect(addr1).mint(URI);
-    //         await nft.connect(addr1).setApprovalForAll(marketplace.address, true);
-    //         await marketplace.connect(addr1).makeItem(
-    //           nft.address,
-    //           1, 
-    //           toWei(price)  
-    //         );
-    //     });
+    describe("Purchasing Tickets", function (){
 
-    //     it ("Should update item as sold, pay seller, transfer to buyer...", async function(){
-    //         const sellerInitialEthBal = await addr1.getBalance();
-    //         const feeAccountInitialEthBal = await deployer.getBalance();
-    //         totalPriceInWei = await marketplace.getTotalPrice(1);
-    //         await expect(marketplace.connect(addr2).purchaseItem(1, {value:totalPriceInWei} ))
-    //         .to.emit(marketplace, "Bought")
-    //         .withArgs(
-    //             1, 
-    //             nft.address,
-    //             1,
-    //             toWei(price),
-    //             addr1.address,
-    //             addr2.address
-    //         );
+        let price = 2;
+        let fee = (feePercent/100)*price;
+        let totalPriceInWei;
+
+        beforeEach(async function(){
+            await nft.connect(addr1).mint(URI, "Nuevo NFT", toWei(price));
+            await nft.connect(addr1).setApprovalForAll(nft.address, true);            
+        });
+
+        it ("Should update item as sold, pay seller, transfer to buyer...", async function(){
+            const sellerInitialEthBal = await addr1.getBalance();
+            const feeAccountInitialEthBal = await deployer.getBalance();
+
+            totalPriceInWei = await nft.getTotalPrice(1);
+            await expect(nft.connect(addr2).sellTicket(1, {value:totalPriceInWei} ))
+            .to.emit(nft, "Bought")
+            .withArgs(
+                1,
+                toWei(price),
+                addr1.address,
+                addr2.address                
+            );
             
-    //         const sellerFinalEthBal = await addr1.getBalance();
-    //         const feeAccountFinalEthBal = await deployer.getBalance();
+            const sellerFinalEthBal = await addr1.getBalance();
+            const feeAccountFinalEthBal = await deployer.getBalance();
 
-    //         expect((await marketplace.items(1)).sold).to.equal(true);
-    //         expect(+fromWei(sellerFinalEthBal)).to.equal(+price + +fromWei(sellerInitialEthBal));
-    //         expect(+fromWei(feeAccountFinalEthBal)).to.equal(+fee + +fromWei(feeAccountInitialEthBal));
-    //         expect(await nft.ownerOf(1)).to.equal(addr2.address);
-    //     });
-    // });
-
+            expect((await nft.ticketSold(1))).to.equal(true);
+            // expect(+fromWei(sellerFinalEthBal)).to.equal(+price + +fromWei(sellerInitialEthBal));
+            // expect(+fromWei(feeAccountFinalEthBal)).to.equal(+fee + +fromWei(feeAccountInitialEthBal));
+            expect(await nft.ownerOf(1)).to.equal(addr2.address);
+        });
+    });
 
 })
