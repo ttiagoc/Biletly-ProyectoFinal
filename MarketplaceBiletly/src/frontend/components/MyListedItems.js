@@ -2,30 +2,31 @@ import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { Row, Col, Card } from 'react-bootstrap';
 
-function renderSoldItems(items) {
-    return (
-        <>
-            <h2>Sold</h2>
-            <Row xs={1} md={2} lg={4} className="g-4 py-3">
-                {items.map((item, idx) => (
-                    <Col key={idx} className="overflow-hidden">
-                        <Card>
-                            <Card.Img variant="top" src={item.image} />
-                            <Card.Footer>
-                                For {ethers.utils.formatEther(item.totalPrice)} ETH - Recieved {ethers.utils.formatEther(item.price)} ETH
-                            </Card.Footer>
-                        </Card>
-                    </Col>
-                ))}
-            </Row>
-        </>
-    )
-}
+// function renderSoldItems(items) {
+//     return (
+//         <>
+//             <h2>Sold</h2>
+//             <Row xs={1} md={2} lg={4} className="g-4 py-3">
+//                 {items.map((item, idx) => (
+//                     <Col key={idx} className="overflow-hidden">
+//                         <Card>
+//                             <Card.Img variant="top" src={item.image} />
+//                             <Card.Footer>
+//                                 For {ethers.utils.formatEther(item.totalPrice)} ETH - Recieved {ethers.utils.formatEther(item.price)} ETH
+//                             </Card.Footer>
+//                         </Card>
+//                     </Col>
+//                 ))}
+//             </Row>
+//         </>
+//     )
+// }
 
 export default function MyListedItems({ nft, account }) {
     const [loading, setLoading] = useState(true);
     const [listedItems, setListedItems] = useState([]);
-    const [soldItems, setSoldItems] = useState([]);
+    // const [soldItems, setSoldItems] = useState([]);
+
     const loadListedItems = async () => {
         const itemCount = await nft.tokenCount();
         let listedItems = [];
@@ -34,7 +35,7 @@ export default function MyListedItems({ nft, account }) {
             const i = await nft.entradas(indx);
             // console.log(String(await nft.getOwner(i.idEntrada)).toUpperCase())
             // console.log(account.toString().toUpperCase())            
-            if (String(await nft.getOwner(i.idEntrada)).toUpperCase() === account.toString().toUpperCase()) {
+            if (String(await nft.getOwner(i.idEntrada)).toUpperCase() === account.toString().toUpperCase() && !(await nft.ticketSold(i.idEntrada))) {
                 const uri = await nft.tokenURI(i.idEntrada);
                 const response = await fetch(uri);
                 const metadata = await response.json();
@@ -48,14 +49,14 @@ export default function MyListedItems({ nft, account }) {
                     image: metadata.image
                 };
                 listedItems.push(item);                
-                if (await nft.ticketSold(i.idEntrada)){
-                    soldItems.push(item);
-                }
+                // if (await nft.ticketSold(item.itemId)){
+                //     soldItems.push(item);
+                // }
             }
         }
         setLoading(false);
         setListedItems(listedItems);
-        setSoldItems(soldItems);
+        // setSoldItems(soldItems);
     }
     useEffect(() => {
         loadListedItems()
@@ -81,7 +82,7 @@ export default function MyListedItems({ nft, account }) {
                             </Col>
                         ))}
                     </Row>
-                    {soldItems.length > 0 && renderSoldItems(soldItems)}
+                    {/* {soldItems.length > 0 && renderSoldItems(soldItems)} */}
                 </div>
                 : (
                     <main style={{ padding: "1rem 0" }}>

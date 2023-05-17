@@ -72,9 +72,8 @@ const Create = ({ nft, account }) => {
 
     const mintThenList = async (result) => {
         const uri = `${subdomain}/ipfs/${result.path}`;
-        // const listingPrice = ethers.utils.parseEther(price.toString());
-        console.log(price)
-        await (await nft.mint(uri, description, price)).wait();
+        const listingPrice = ethers.utils.parseEther(price.toString());
+        await (await nft.mint(uri, description, listingPrice)).wait();
         // const id = await nft.tokenCount();
         // setId(await nft.tokenCount());
         // await (await nft.setApprovalForAll(marketplace.address, true));
@@ -99,7 +98,7 @@ const Create = ({ nft, account }) => {
                             {/* <Form.Control onChange={(e) => setDescription(e.target.value)} size="lg" required as="textarea" placeholder="Description"/> */}
                             <Form.Control onChange={(e) => setPrice(e.target.value)} size="lg" required type="number" placeholder='Price (ETH)' />
                             <div className='g-grid px-0'>
-                                <Button onClick={createNFT} variant="primary" size="lg">
+                                <Button onClick={createNFT} variant="dark" size="lg">
                                     Create and list NFT!
                                 </Button>
                             </div>

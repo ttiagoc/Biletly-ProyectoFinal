@@ -23,7 +23,7 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
     mapping(uint => address) private _propietarioEntrada;
     mapping(uint => bool) private _entradaUtilizada;
 
-    constructor(uint _porcentajeReventa) ERC721("TicketContract", "TICKET"){
+    constructor(uint _porcentajeReventa) ERC721("NFTicket", "TICKET"){
         porcentajeReventa = _porcentajeReventa;
         cuentaMaestra = payable(msg.sender);
         _ventaActiva = true;
@@ -42,11 +42,11 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
         address indexed comprador
     );
 
-    function mint(string memory _tokenURI, string memory _descripcion, uint _precio) external nonReentrant returns(uint){
+    function mint(string memory _tokenURI, string memory _descripcion, uint _precio) external nonReentrant onlyOwner() returns (uint){ // NO SE SI PONERLE ONLYOWNER
 
         tokenCount++;
-        require(_precio > 0, "Price must be greater than zero");
-        require(!_exists(tokenCount), "Ticket already exists");
+        // require(_precio > 0, "ERC721: Price must be greater than zero");
+        require(!_exists(tokenCount), "ERC721: Ticket already exists");
         _safeMint(msg.sender, tokenCount);
         _setTokenURI(tokenCount, _tokenURI);
         
@@ -68,17 +68,17 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
         return tokenCount;
     }
 
-    function setPrice(uint256 _tokenId, uint256 _newPrice) external {
-        require(_exists(_tokenId), "Ticket does not exist");
-        require(ownerOf(_tokenId) == msg.sender, "Not the ticket owner");
+    function setPrice(uint _tokenId, uint _newPrice) external {
+        require(_exists(_tokenId), "ERC721: Ticket does not exist");
+        require(ownerOf(_tokenId) == msg.sender, "ERC721: Not the ticket owner");
         entradas[_tokenId].precio = _newPrice;
     }
 
-    function sellTicket(uint256 _tokenId) external payable nonReentrant {
-        require(_exists(_tokenId), "Ticket does not exist");
-        require(msg.value >= getTotalPrice(_tokenId), "Insufficient payment");    
-        require(!(_entradaVendida[_tokenId]), "Ticket has already been sold");    
-        require(_ventaActiva == true, "Ticket sale is close");
+    function sellTicket(uint _tokenId) external payable nonReentrant {
+        require(_exists(_tokenId), "ERC721: Ticket does not exist");
+        require(msg.value >= getTotalPrice(_tokenId), "ERC721: Insufficient payment");    
+        require(!(_entradaVendida[_tokenId]), "ERC721: Ticket has already been sold");    
+        require(_ventaActiva == true, "ERC721: Ticket sale is close");
 
         address previousOwner = ownerOf(_tokenId);
         address payable newOwner = payable(msg.sender);
@@ -105,8 +105,9 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
     }
 
     function useTicket(uint _tokenId) external returns (bool) {
-        require(_exists(_tokenId), "Ticket does not exist");
-        require(ticketUsed(_tokenId), "Ticket has already been used");    
+        require(_exists(_tokenId), "ERC721: Ticket does not exist");
+        require(!ticketUsed(_tokenId), "ERC721: Ticket has already been used");   
+        // require(ownerOf(_tokenId) == msg.sender, "ERC721: Not the ticket owner"); NO SE BIEN 
         _entradaUtilizada[_tokenId] = true;    
         return true;
     }
@@ -127,12 +128,15 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
         return ((entradas[_tokenId].precio*(100 + porcentajeReventa))/100);        
     }
 
-    function changeSaleState(bool estado) public onlyOwner{
-        _ventaActiva = estado;
+    function getSaleState() public view returns(bool) {
+        return _ventaActiva;        
     }
-    
-    //HACER WITHDRAW
-     
+
+    function changeSaleState() external onlyOwner returns (bool) {
+        _ventaActiva = !_ventaActiva;
+        return _ventaActiva;
+    }
+
 
     // function getTicketAttributes(uint256 _tokenId)
     //     external

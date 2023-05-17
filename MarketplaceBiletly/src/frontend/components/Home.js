@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { ethers } from "ethers";
 import { Row, Col, Card, Button } from 'react-bootstrap';
 
-const Home = ({ nft }) => {
+const Home = ({ nft, account }) => {
     const [loading, setLoading] = useState(true);
     const [items, setItems] = useState([]);
     const loadMarketplaceItem = async () => {
@@ -14,9 +14,9 @@ const Home = ({ nft }) => {
                 const uri = await nft.tokenURI(i);
                 const response = await fetch(uri);
                 const metadata = await response.json()
-                const totalPrice = await nft.getTotalPrice(i);
+                const ticketTotalPrice = await nft.getTotalPrice(i);
                 tickets.push({
-                    totalPrice,
+                    totalPrice : ticketTotalPrice,
                     itemId: ticket.idEntrada,
                     seller: nft.getOwner(ticket.idEntrada),
                     name: metadata.name,
@@ -29,9 +29,8 @@ const Home = ({ nft }) => {
         setItems(tickets);
     }
 
-    const buyMarketItem = async (item) => {
-        console.log(ethers.utils.formatEther(item.totalPrice.toString()))
-        (await nft.sellTicket(item.idEntrada, {value:  ethers.utils.parseEther(item.totalPrice.toString())})).wait();
+    const buyMarketItem = async (item) => {     
+        await nft.sellTicket(item.itemId, {value: item.totalPrice }).wait();
         loadMarketplaceItem();
     }
 
