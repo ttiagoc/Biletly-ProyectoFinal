@@ -110,13 +110,13 @@ describe("NFTMarketplace", function (){
             // const feeAccountInitialEthBal = await deployer.getBalance();
 
             totalPriceInWei = await nft.getTotalPrice(1);
-            await expect(nft.connect(addr2).sellTicket(1, {value:totalPriceInWei} ))
+            await expect(nft.connect(addr1).sellTicket(1, {value:totalPriceInWei} ))
             .to.emit(nft, "Bought")
             .withArgs(
                 1,
                 toWei(price),
                 deployer.address,
-                addr2.address                
+                addr1.address                
             );
             
             const sellerFinalEthBal = await deployer.getBalance();
@@ -125,7 +125,7 @@ describe("NFTMarketplace", function (){
             expect((await nft.ticketSold(1))).to.equal(true);
             expect(+fromWei(sellerFinalEthBal)).to.equal(+price + +fromWei(sellerInitialEthBal));
             //expect(+fromWei(feeAccountFinalEthBal)).to.equal(+fee + +fromWei(feeAccountInitialEthBal)); // ME ACTUALIZA LOS BALANCES BIEN PERO LAS COMPARACIONES LAS HACE MAL POR SER NUMS MUY GRANDES
-            expect(await nft.getOwner(1)).to.equal(addr2.address);
+            expect(await nft.getOwner(1)).to.equal(addr1.address);
         });
     });
 
@@ -170,13 +170,13 @@ describe("NFTMarketplace", function (){
             expect((await nft.ticketSold(1))).to.equal(false);       
 
             totalPriceInWei = await nft.getTotalPrice(1);
-            await expect(nft.connect(addr2).sellTicket(1, {value:totalPriceInWei} ))
+            await expect(nft.connect(addr1).sellTicket(1, {value:totalPriceInWei} ))
             .to.emit(nft, "Bought")
             .withArgs(
                 1,
                 toWei(price),
                 deployer.address,
-                addr2.address                
+                addr1.address                
             );    
 
             expect((await nft.ticketSold(1))).to.equal(true);  

@@ -10,11 +10,7 @@ export default function Bd() {
            // console.log(resultdata)
            
             return (
-
                 <>
-             
-
-
                         {resultdata.forEach(item => {
                             
                             <>

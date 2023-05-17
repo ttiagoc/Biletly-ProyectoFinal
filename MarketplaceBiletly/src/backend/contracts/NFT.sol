@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
 
-    uint public tokenCount;
+    uint public tokenCount = 0;
     uint public porcentajeReventa;
     address payable public cuentaMaestra;
     bool private _ventaActiva;
@@ -57,6 +57,7 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
         entradas[tokenCount] = attributes;
 
         _entradaVendida[tokenCount] = false;
+        _entradaUtilizada[tokenCount] = false;
         _propietarioEntrada[tokenCount] = msg.sender;
 
         emit Offered(
@@ -79,6 +80,7 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
         require(msg.value >= getTotalPrice(_tokenId), "ERC721: Insufficient payment");    
         require(!(_entradaVendida[_tokenId]), "ERC721: Ticket has already been sold");    
         require(_ventaActiva == true, "ERC721: Ticket sale is close");
+        require(getOwner(_tokenId) != msg.sender, "ERC721: Msg.sender is already the owner of the ticket");
 
         address previousOwner = ownerOf(_tokenId);
         address payable newOwner = payable(msg.sender);

@@ -1,4 +1,5 @@
 require("@nomiclabs/hardhat-waffle");
+const Dotenv = require('dotenv-webpack');
 
 // const fs = require('fs')
 // const privateKey = fs.readFileSync(".secret").toString().trim();
@@ -26,5 +27,8 @@ module.exports = {
   images:{
     // domains: ["<subdomain>.infura-ipfs.io", "infura-ipfs.io"]
     domains: ["infura-ipfs.io"]
-  }
+  },
+  plugins:[
+    new Dotenv()
+  ]
 };

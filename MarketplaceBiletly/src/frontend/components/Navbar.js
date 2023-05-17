@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Navbar, Nav, Button, Container } from 'react-bootstrap';
 // import nft from './nft.png';
-import logo from './logo_Mesa de trabajo 2.png';
+import logo from '../public/logo.png'
 import './App.css';
 
 const Navigation = ({ web3Handler, account }) => {

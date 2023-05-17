@@ -1,31 +1,11 @@
 import { useState } from 'react';
 import { ethers } from 'ethers';
 import { Row, Form, Button } from 'react-bootstrap';
-import { create as ipfsHttpClient } from 'ipfs-http-client';
-import { Buffer } from 'buffer/';
+import client , {subdomain} from '../../backend/config/Infura';
 // import 'dotenv/config'
 // import * as fs from 'fs-extra';
 
 // const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0');
-
-const projectId = "2PTeXaWpD6pJoeAO7L7Up1eH9ID"; 
-const projectSecretKey = "1bec7aa48ccc32e3fa7d63ae74ed2940";
-console.log(projectId);
-const auth = `Basic ${Buffer.from(`${projectId}:${projectSecretKey}`).toString(
-    "base64"
-)}`
-
-const subdomain = "https://ipfs.io";
-
-const client = ipfsHttpClient({
-    host: "infura-ipfs.io",
-    port: 5001,
-    protocol: "https",
-    headers: {
-        authorization: auth,
-    },
-});
-
 
 const Create = ({ nft, account }) => {
 
@@ -74,12 +54,12 @@ const Create = ({ nft, account }) => {
         const uri = `${subdomain}/ipfs/${result.path}`;
         const listingPrice = ethers.utils.parseEther(price.toString());
         await (await nft.mint(uri, description, listingPrice)).wait();
+
         // const id = await nft.tokenCount();
         // setId(await nft.tokenCount());
         // await (await nft.setApprovalForAll(marketplace.address, true));
         // await (await marketplace.makeItem(nft.address, id, listingPrice)).wait();
     }
-
     
     return (
         <div className="container-fluid mt-5">

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ethers } from "ethers";
 import { Row, Col, Card, Button } from 'react-bootstrap';
+import Bd from '../../backend/helper/Bd.js';
 
 const Home = ({ nft, account }) => {
     const [loading, setLoading] = useState(true);
@@ -10,7 +11,7 @@ const Home = ({ nft, account }) => {
         let tickets = []
         for (let i = 1; i <= ticketCount; i++) {
             const ticket = await nft.entradas(i);                
-            if (!(await nft.ticketSold(i))) {
+            // if (!(await nft.ticketSold(i))) {
                 const uri = await nft.tokenURI(i);
                 const response = await fetch(uri);
                 const metadata = await response.json()
@@ -21,9 +22,10 @@ const Home = ({ nft, account }) => {
                     seller: nft.getOwner(ticket.idEntrada),
                     name: metadata.name,
                     description: metadata.description,
-                    image: metadata.image
+                    image: metadata.image,
+                    sold: await nft.ticketSold(ticket.idEntrada)
                 });
-            }
+            // }
         }
         setLoading(false);
         setItems(tickets);
@@ -58,9 +60,13 @@ const Home = ({ nft, account }) => {
                                     </Card.Body>
                                     <Card.Footer>
                                         <div className="d-grid">
-                                            <Button onClick={() => buyMarketItem(item)} variant="primary" size="lg">
+                                            {item.sold === false ?
+                                                <Button onClick={() => buyMarketItem(item)} variant="outline-dark" size="lg">
                                                 Buy by {ethers.utils.formatEther(item.totalPrice)} ETH
-                                            </Button>
+                                                </Button>
+                                            : (
+                                                <h5>Ticket sold</h5>
+                                            )} 
                                         </div>
                                     </Card.Footer>
                                 </Card>
@@ -73,6 +79,8 @@ const Home = ({ nft, account }) => {
                         <h2>No assets</h2>
                     </main>
                 )}
+
+            <Bd/>
         </div>
     );
 }
