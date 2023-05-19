@@ -15,11 +15,18 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
     struct Entrada {
         uint idEntrada;
         string descripcion;
-        uint precio;
+        uint precio;        
+    }
+
+    struct Evento{
         uint idEvento;
+        uint fecha;
+        string artista;
+        string descripcion;
     }
 
     mapping(uint => Entrada) public entradas;  
+    mapping(uint => Evento) public entradasEventos;  
     mapping(uint => bool) private _entradaVendida;
     mapping(uint => address) private _propietarioEntrada;
     mapping(uint => bool) private _entradaUtilizada;
@@ -43,7 +50,7 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
         address indexed comprador
     );
 
-    function mint(string memory _tokenURI, string memory _descripcion, uint _precio, uint _idEvento) external nonReentrant onlyOwner() returns (uint){ // NO SE SI PONERLE ONLYOWNER
+    function mint(string memory _tokenURI, string memory _descripcion, uint _precio, Evento _evento) external nonReentrant onlyOwner() returns (uint){ // NO SE SI PONERLE ONLYOWNER
 
         tokenCount++;
         // require(_precio > 0, "ERC721: Price must be greater than zero");
@@ -54,9 +61,15 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
         Entrada memory attributes;
         attributes.idEntrada = tokenCount;
         attributes.descripcion = _descripcion;
-        attributes.precio = _precio;
-        attributes.idEvento = _idEvento;
-        entradas[tokenCount] = attributes;
+        attributes.precio = _precio;        
+        entradas[tokenCount] = attributes;        
+
+        Evento memory evento;
+        evento.idEvento = _evento.idEvento;
+        evento.fecha = _evento.fecha;
+        evento.artista = _evento.artista;
+        evento.descripcion = _evento.descripcion;
+        entradasEventos[tokenCount] = evento;
 
         _entradaVendida[tokenCount] = false;
         _entradaUtilizada[tokenCount] = false;
@@ -130,8 +143,8 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
         return ownerOf(_tokenId);        
     }
 
-    function getEvent(uint _tokenId) public view returns (uint){
-        return entradas[_tokenId].idEvento;        
+    function getEvent(uint _tokenId) public view returns (Evento){
+        return entradasEventos[_tokenId];       
     }
 
     function getTotalPrice(uint _tokenId) public view returns(uint) {
