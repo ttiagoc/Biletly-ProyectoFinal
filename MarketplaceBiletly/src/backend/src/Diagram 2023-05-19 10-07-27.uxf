@@ -1,0 +1,41 @@
+<diagram program="umletino" version="15.1"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>640</x><y>262</y><w>210</w><h>190</h></coordinates><panel_attributes>Entrada
+--
+-datos: String
+-numAsiento: int
+-precio: float
+-imagen: String
+-tieneNFT: bool
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1060</x><y>262</y><w>210</w><h>190</h></coordinates><panel_attributes>Usuario
+--
+-nombreCompleto: String
+-adress: String
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1030</x><y>542</y><w>210</w><h>170</h></coordinates><panel_attributes>Ticketera
+--
+-nombre: String
+-url: String
+-
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>630</x><y>542</y><w>210</w><h>190</h></coordinates><panel_attributes>Evento
+--
+-artista: String
+-fecha: date
+-
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>840</x><y>342</y><w>240</w><h>60</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+-entradas
+                                0--*
+</panel_attributes><additional_attributes>220;20;10;20</additional_attributes></element><element><id>Relation</id><coordinates><x>720</x><y>442</y><w>130</w><h>120</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+-entradas
+                               
+0--*
+</panel_attributes><additional_attributes>10;100;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>840</x><y>602</y><w>210</w><h>80</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+-eventos
+                               
+0--*
+</panel_attributes><additional_attributes>190;20;10;20</additional_attributes></element><element><id>UMLClass</id><coordinates><x>200</x><y>262</y><w>210</w><h>190</h></coordinates><panel_attributes>NFT	
+--
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>400</x><y>332</y><w>260</w><h>60</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+-idNFT
+                                0--1
+</panel_attributes><additional_attributes>240;20;10;20</additional_attributes></element></diagram>
