@@ -1,45 +1,6 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "C:\\Users\\Nano\\Desktop\\ORT\\2023\\Biletly-ProyectoFinal\\MarketplaceBiletly\\src\\backend\\contracts\\Marketplace.sol": {
-      "lastModificationDate": 1684276433207,
-      "contentHash": "b8833ff618437f86b16a9fb12a0db13b",
-      "sourceName": "src/backend/contracts/Marketplace.sol",
-      "solcConfig": {
-        "version": "0.8.4",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "@openzeppelin/contracts/token/ERC721/IERC721.sol",
-        "@openzeppelin/contracts/security/ReentrancyGuard.sol",
-        "@openzeppelin/contracts/access/Ownable.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.4"
-      ],
-      "artifacts": [
-        "Marketplace"
-      ]
-    },
     "C:\\Users\\Nano\\Desktop\\ORT\\2023\\Biletly-ProyectoFinal\\MarketplaceBiletly\\node_modules\\@openzeppelin\\contracts\\security\\ReentrancyGuard.sol": {
       "lastModificationDate": 1684276520297,
       "contentHash": "92f9448b23a90ea3bb932ee55cc3ccce",
@@ -442,8 +403,8 @@
       ]
     },
     "C:\\Users\\Nano\\Desktop\\ORT\\2023\\Biletly-ProyectoFinal\\MarketplaceBiletly\\src\\backend\\contracts\\NFT.sol": {
-      "lastModificationDate": 1684357225864,
-      "contentHash": "b865e059fa022d75a7ad994e2dc6d74d",
+      "lastModificationDate": 1684454934429,
+      "contentHash": "270ef8be1fed857a3df97e085623c6c5",
       "sourceName": "src/backend/contracts/NFT.sol",
       "solcConfig": {
         "version": "0.8.4",

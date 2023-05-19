@@ -16,6 +16,7 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
         uint idEntrada;
         string descripcion;
         uint precio;
+        uint idEvento;
     }
 
     mapping(uint => Entrada) public entradas;  
@@ -42,7 +43,7 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
         address indexed comprador
     );
 
-    function mint(string memory _tokenURI, string memory _descripcion, uint _precio) external nonReentrant onlyOwner() returns (uint){ // NO SE SI PONERLE ONLYOWNER
+    function mint(string memory _tokenURI, string memory _descripcion, uint _precio, uint _idEvento) external nonReentrant onlyOwner() returns (uint){ // NO SE SI PONERLE ONLYOWNER
 
         tokenCount++;
         // require(_precio > 0, "ERC721: Price must be greater than zero");
@@ -54,6 +55,7 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
         attributes.idEntrada = tokenCount;
         attributes.descripcion = _descripcion;
         attributes.precio = _precio;
+        attributes.idEvento = _idEvento;
         entradas[tokenCount] = attributes;
 
         _entradaVendida[tokenCount] = false;
@@ -106,10 +108,12 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
         );
     }
 
-    function useTicket(uint _tokenId) external returns (bool) {
+    function useTicket(uint _tokenId, uint _idEvento) external returns (bool) {
         require(_exists(_tokenId), "ERC721: Ticket does not exist");
         require(!ticketUsed(_tokenId), "ERC721: Ticket has already been used");   
-        // require(ownerOf(_tokenId) == msg.sender, "ERC721: Not the ticket owner"); NO SE BIEN 
+        require(getEvent(_tokenId) == _idEvento, "ERC721: Not a ticket from the event"); 
+        require(getOwner(_tokenId) == msg.sender, "ERC721: Not the ticket owner"); // NO SE BIEN 
+
         _entradaUtilizada[_tokenId] = true;    
         return true;
     }
@@ -126,6 +130,10 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
         return ownerOf(_tokenId);        
     }
 
+    function getEvent(uint _tokenId) public view returns (uint){
+        return entradas[_tokenId].idEvento;        
+    }
+
     function getTotalPrice(uint _tokenId) public view returns(uint) {
         return ((entradas[_tokenId].precio*(100 + porcentajeReventa))/100);        
     }
@@ -138,7 +146,6 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
         _ventaActiva = !_ventaActiva;
         return _ventaActiva;
     }
-
 
     // function getTicketAttributes(uint256 _tokenId)
     //     external

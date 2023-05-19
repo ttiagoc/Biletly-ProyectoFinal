@@ -46,14 +46,14 @@ describe("NFTMarketplace", function (){
 
         it("Should track each minted NFT", async function (){
             // HAY ONLYOWNER
-            await expect(nft.connect(addr1).mint(URI, "Nuevo NFT", 10)).to.be.reverted; // solo el owner puede crear nfts
+            await expect(nft.connect(addr1).mint(URI, "Nuevo NFT", 10, 1)).to.be.reverted; // solo el owner puede crear nfts
 
-            await nft.connect(deployer).mint(URI, "Nuevo NFT", 10)
+            await nft.connect(deployer).mint(URI, "Nuevo NFT", 10, 1)
             expect(await nft.tokenCount()).to.equal(1);
             expect(await nft.balanceOf(deployer.address)).to.equal(1);
             expect(await nft.tokenURI(1)).to.equal(URI);
 
-            await nft.connect(deployer).mint(URI, "Segundo NFT", 15);
+            await nft.connect(deployer).mint(URI, "Segundo NFT", 15, 1);
             expect(await nft.tokenCount()).to.equal(2);
             expect(await nft.balanceOf(deployer.address)).to.equal(2);
             expect(await nft.tokenURI(2)).to.equal(URI);
@@ -71,7 +71,7 @@ describe("NFTMarketplace", function (){
         //});
 
         it("Should track newly created NFTs", async function(){
-            await expect(nft.connect(deployer).mint(URI, "Nuevo NFT", toWei(price)))
+            await expect(nft.connect(deployer).mint(URI, "Nuevo NFT", toWei(price), 1))
             .to.emit(nft, "Offered")
             .withArgs(
                 1,                
@@ -101,7 +101,7 @@ describe("NFTMarketplace", function (){
         let totalPriceInWei;
 
         beforeEach(async function(){
-            await nft.connect(deployer).mint(URI, "Nuevo NFT", toWei(price));
+            await nft.connect(deployer).mint(URI, "Nuevo NFT", toWei(price), 1);
             await nft.connect(deployer).setApprovalForAll(nft.address, true);            
         });
 
@@ -137,7 +137,7 @@ describe("NFTMarketplace", function (){
         let finalPriceInWei = toWei(newPrice);
 
         beforeEach(async function(){
-            await nft.connect(deployer).mint(URI, "Nuevo NFT", initialPriceInWei);
+            await nft.connect(deployer).mint(URI, "Nuevo NFT", initialPriceInWei, 1);
             await nft.connect(deployer).setApprovalForAll(nft.address, true);            
         });
 
@@ -159,9 +159,10 @@ describe("NFTMarketplace", function (){
 
         let price = 10;
         let totalPriceInWei;
+        let idEvento = 1;
 
         beforeEach(async function(){
-            await nft.connect(deployer).mint(URI, "Nuevo NFT", toWei(price));
+            await nft.connect(deployer).mint(URI, "Nuevo NFT", toWei(price), idEvento);
             await nft.connect(deployer).setApprovalForAll(nft.address, true);            
         });
 
@@ -189,9 +190,9 @@ describe("NFTMarketplace", function (){
         it ("Should stablish ticket as used", async function(){
 
             expect((await nft.ticketUsed(1))).to.equal(false);     
-            await nft.connect(deployer).useTicket(1);
+            await nft.connect(deployer).useTicket(1, idEvento);
             expect((await nft.ticketUsed(1))).to.equal(true);   
-            await expect(nft.connect(deployer).useTicket(1)).to.be.revertedWith('ERC721: Ticket has already been used');
+            await expect(nft.connect(deployer).useTicket(1, idEvento)).to.be.revertedWith('ERC721: Ticket has already been used');
                                   
         });
 

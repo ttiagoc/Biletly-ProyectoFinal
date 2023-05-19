@@ -11,7 +11,6 @@ const Create = ({ nft, account }) => {
 
     const [image, setImage] = useState('');
     const [name, setName] = useState('');
-    const [type, setType] = useState('');
     const [number, setNumber] = useState(null);
     const [price, setPrice] = useState(null);
     const [description, setDescription] = useState(null);
@@ -32,16 +31,16 @@ const Create = ({ nft, account }) => {
 
     const createNFT = async () => {        
              
-        if (!image || !price || !name || !type || !number) return
+        if (!image || !price || !name || !number) return
         try {     
-            setDescription('TICKET NAME: ' +  name  + ' - TYPE: ' +  type + ' - NUMBER: ' + number + ' - PRICE: ' + price + 'ETH');     
+            setDescription('TICKET NAME: ' +  name + ' - NUMBER: ' + number + ' - PRICE: ' + price + 'ETH');     
             if(description != null){
                 console.log()
                 const result = await client.add(JSON.stringify({ image, price, name, description }));
                 console.log(result);
                 mintThenList(result);
             }else{
-                setDescription('TICKET NAME: ' +  name  + ' - TYPE: ' +  type + ' - NUMBER: ' + number + ' - PRICE: ' + price + 'ETH'); 
+                setDescription('TICKET NAME: ' +  name + ' - NUMBER: ' + number + ' - PRICE: ' + price + 'ETH'); 
                 
             }
         } catch (error) {
@@ -53,7 +52,7 @@ const Create = ({ nft, account }) => {
     const mintThenList = async (result) => {
         const uri = `${subdomain}/ipfs/${result.path}`;
         const listingPrice = ethers.utils.parseEther(price.toString());
-        await (await nft.mint(uri, description, listingPrice)).wait();
+        await (await nft.mint(uri, description, listingPrice, 1)).wait();
 
         // const id = await nft.tokenCount();
         // setId(await nft.tokenCount());
@@ -73,7 +72,6 @@ const Create = ({ nft, account }) => {
                                 name="file"
                                 onChange={uploadToIPFS} />                            
                             <Form.Control onChange={(e) => setName(e.target.value)} size="lg" required type="text" placeholder="Name" />
-                            <Form.Control onChange={(e) => setType(e.target.value)} size="lg" required type="text" placeholder="Type of ticket" />
                             <Form.Control onChange={(e) => setNumber(e.target.value)} size="lg" required type="number" placeholder="Place/Number of ticket" />
                             {/* <Form.Control onChange={(e) => setDescription(e.target.value)} size="lg" required as="textarea" placeholder="Description"/> */}
                             <Form.Control onChange={(e) => setPrice(e.target.value)} size="lg" required type="number" placeholder='Price (ETH)' />
