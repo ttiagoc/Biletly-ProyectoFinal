@@ -108,10 +108,10 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
         );
     }
 
-    function useTicket(uint _tokenId, uint _idEvento) external returns (bool) {
+    function useTicket(uint _tokenId) external returns (bool) {
         require(_exists(_tokenId), "ERC721: Ticket does not exist");
         require(!ticketUsed(_tokenId), "ERC721: Ticket has already been used");   
-        require(getEvent(_tokenId) == _idEvento, "ERC721: Not a ticket from the event"); 
+        // require(getEvent(_tokenId) == _idEvento, "ERC721: Not a ticket from the event"); 
         require(getOwner(_tokenId) == msg.sender, "ERC721: Not the ticket owner"); // NO SE BIEN 
 
         _entradaUtilizada[_tokenId] = true;    
