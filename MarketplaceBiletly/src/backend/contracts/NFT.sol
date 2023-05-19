@@ -21,7 +21,7 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
     struct Evento{
         uint idEvento;
         uint fecha;
-        string artista;
+        string nombre;
         string descripcion;
     }
 
@@ -67,7 +67,7 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
         Evento memory evento;
         evento.idEvento = _evento.idEvento;
         evento.fecha = _evento.fecha;
-        evento.artista = _evento.artista;
+        evento.nombre = _evento.nombre;
         evento.descripcion = _evento.descripcion;
         entradasEventos[tokenCount] = evento;
 
