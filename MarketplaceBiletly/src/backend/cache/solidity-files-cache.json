@@ -403,8 +403,8 @@
       ]
     },
     "C:\\Users\\Nano\\Desktop\\ORT\\2023\\Biletly-ProyectoFinal\\MarketplaceBiletly\\src\\backend\\contracts\\NFT.sol": {
-      "lastModificationDate": 1684454934429,
-      "contentHash": "270ef8be1fed857a3df97e085623c6c5",
+      "lastModificationDate": 1684685469467,
+      "contentHash": "e88a6d9ca7f8bf4104cd65af9cf94b20",
       "sourceName": "src/backend/contracts/NFT.sol",
       "solcConfig": {
         "version": "0.8.4",

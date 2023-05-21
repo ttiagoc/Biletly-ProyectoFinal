@@ -5,6 +5,7 @@
   "dependencies": {
     "@babel/preset-react": "7.16.7",
     "@chainlink/contracts": "0.4.0",
+    "@coinbase/wallet-sdk": "^3.6.6",
     "@nomiclabs/hardhat-ethers": "2.0.5",
     "@nomiclabs/hardhat-waffle": "2.0.2",
     "@openzeppelin/contracts": "4.5.0",
@@ -27,7 +28,8 @@
     "react-dom": "18.0.0",
     "react-router": "6.2.1",
     "react-router-dom": "6.2.1",
-    "react-scripts": "5.0.0"
+    "react-scripts": "5.0.0",
+    "web3modal": "^1.9.12"
   },
   "scripts": {
     "start": "react-scripts start",

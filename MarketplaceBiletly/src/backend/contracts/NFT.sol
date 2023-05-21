@@ -50,7 +50,7 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
         address indexed comprador
     );
 
-    function mint(string memory _tokenURI, string memory _descripcion, uint _precio, Evento _evento) external nonReentrant onlyOwner() returns (uint){ // NO SE SI PONERLE ONLYOWNER
+    function mint(string memory _tokenURI, string memory _descripcion, uint _precio, Evento memory _evento) external nonReentrant onlyOwner() returns (uint){ // NO SE SI PONERLE ONLYOWNER
 
         tokenCount++;
         // require(_precio > 0, "ERC721: Price must be greater than zero");
@@ -143,7 +143,7 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
         return ownerOf(_tokenId);        
     }
 
-    function getEvent(uint _tokenId) public view returns (Evento){
+    function getEvent(uint _tokenId) public view returns (Evento memory){
         return entradasEventos[_tokenId];       
     }
 
