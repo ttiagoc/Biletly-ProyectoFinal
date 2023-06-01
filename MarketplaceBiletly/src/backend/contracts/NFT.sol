@@ -10,7 +10,6 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
     uint public tokenCount = 0;
     uint public porcentajeReventa;
     address payable public cuentaMaestra;
-    bool private _ventaActiva;
 
     struct Entrada {
         uint idEntrada;
@@ -34,7 +33,6 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
     constructor(uint _porcentajeReventa) ERC721("NFTicket", "TICKET"){
         porcentajeReventa = _porcentajeReventa;
         cuentaMaestra = payable(msg.sender);
-        _ventaActiva = true;
     }
 
     event Offered(
@@ -83,6 +81,40 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
 
         return tokenCount;
     }
+    
+    function transferFrom(
+        address _from,
+        address _to,
+        uint _tokenId
+    ) external override{
+        require(_exists(_tokenId), "ERC721: Ticket does not exist");
+        require(getOwner(_tokenId) != _to, "ERC721: To address is already the owner of the ticket");
+        require(getOwner(_tokenId) == _from, "ERC721: From address is not the owner of the ticket");
+        require(from != address(0x0), 'invalid from address');
+        require(to != address(0x0), 'invalid to address');
+
+        _transfer(_from, _to, _tokenId);
+        _entradaVendida[_tokenId] = true;
+        _propietarioEntrada[_tokenId] = newOwner;
+
+        _pagarTasaReventa(_from);
+    }
+
+    function _pagarTasaReventa(address _from) internal payable {
+        require(msg.value > 0, "ERC721: Insufficient payment");  
+        payable(_from).transfer(msg.value - (msg.value * (porcentajeReventa / 100)));
+        payable(owner()).transfer(msg.value * (porcentajeReventa / 100));
+    }
+
+    function useTicket(uint _tokenId) external returns (bool) {
+        require(_exists(_tokenId), "ERC721: Ticket does not exist");
+        require(!ticketUsed(_tokenId), "ERC721: Ticket has already been used");   
+        require(getEvent(_tokenId) == _idEvento, "ERC721: Not a ticket from the event"); 
+        require(getOwner(_tokenId) == msg.sender, "ERC721: Not the ticket owner"); // NO SE BIEN 
+
+        _entradaUtilizada[_tokenId] = true;    
+        return true;
+    }
 
     function setPrice(uint _tokenId, uint _newPrice) external {
         require(_exists(_tokenId), "ERC721: Ticket does not exist");
@@ -93,8 +125,7 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
     function sellTicket(uint _tokenId) external payable nonReentrant {
         require(_exists(_tokenId), "ERC721: Ticket does not exist");
         require(msg.value >= getTotalPrice(_tokenId), "ERC721: Insufficient payment");    
-        require(!(_entradaVendida[_tokenId]), "ERC721: Ticket has already been sold");    
-        require(_ventaActiva == true, "ERC721: Ticket sale is close");
+        require(!(_entradaVendida[_tokenId]), "ERC721: Ticket has already been sold");
         require(getOwner(_tokenId) != msg.sender, "ERC721: Msg.sender is already the owner of the ticket");
 
         address previousOwner = ownerOf(_tokenId);
@@ -121,16 +152,6 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
         );
     }
 
-    function useTicket(uint _tokenId) external returns (bool) {
-        require(_exists(_tokenId), "ERC721: Ticket does not exist");
-        require(!ticketUsed(_tokenId), "ERC721: Ticket has already been used");   
-        // require(getEvent(_tokenId) == _idEvento, "ERC721: Not a ticket from the event"); 
-        require(getOwner(_tokenId) == msg.sender, "ERC721: Not the ticket owner"); // NO SE BIEN 
-
-        _entradaUtilizada[_tokenId] = true;    
-        return true;
-    }
-
     function ticketSold(uint _tokenId) public view returns (bool) {
         return _entradaVendida[_tokenId];
     }
@@ -151,14 +172,6 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
         return ((entradas[_tokenId].precio*(100 + porcentajeReventa))/100);        
     }
 
-    function getSaleState() public view returns(bool) {
-        return _ventaActiva;        
-    }
-
-    function changeSaleState() external onlyOwner returns (bool) {
-        _ventaActiva = !_ventaActiva;
-        return _ventaActiva;
-    }
 
     // function getTicketAttributes(uint256 _tokenId)
     //     external
