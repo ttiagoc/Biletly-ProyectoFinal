@@ -28,7 +28,7 @@ export default class TicketService {
             let result = await pool.request().input('pId', sql.Int, id).
                 query("exec EventoxIdEntrada @pId")
 
-            resultado = result.recordsets[0]
+            resultado = result.recordsets[0][0]
 
         } catch (error) {
             console.log(error)
@@ -45,7 +45,7 @@ export default class TicketService {
             let result = await pool.request().input('pId', sql.Int, id).
                 query("exec getEentradaxId @pId")
 
-            resultado = result.recordsets[0]
+            resultado = result.recordsets[0][0]
 
         } catch (error) {
             console.log(error)
