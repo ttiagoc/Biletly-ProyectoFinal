@@ -2,3 +2,4 @@
 .projectId
 .projectSecretKey
 .env
+/node_modules

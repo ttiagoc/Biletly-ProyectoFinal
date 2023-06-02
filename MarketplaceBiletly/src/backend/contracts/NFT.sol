@@ -4,6 +4,7 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 
 contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
 
@@ -19,7 +20,7 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
 
     struct Evento{
         uint idEvento;
-        uint fecha;
+        string fecha;
         string nombre;
         string descripcion;
     }
@@ -86,30 +87,32 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
         address _from,
         address _to,
         uint _tokenId
-    ) external override{
+    ) public override{
+        
         require(_exists(_tokenId), "ERC721: Ticket does not exist");
         require(getOwner(_tokenId) != _to, "ERC721: To address is already the owner of the ticket");
         require(getOwner(_tokenId) == _from, "ERC721: From address is not the owner of the ticket");
-        require(from != address(0x0), 'invalid from address');
-        require(to != address(0x0), 'invalid to address');
+        require(_from != address(0x0), 'ERC721: Invalid from address');
+        require(_to != address(0x0), 'ERC721: Invalid to address');
+        require(_isApprovedOrOwner(_msgSender(), _tokenId), 'ERC721: MsgSender is not the owner of the token');
 
         _transfer(_from, _to, _tokenId);
         _entradaVendida[_tokenId] = true;
-        _propietarioEntrada[_tokenId] = newOwner;
+        _propietarioEntrada[_tokenId] = _to;
 
         _pagarTasaReventa(_from);
     }
 
-    function _pagarTasaReventa(address _from) internal payable {
+    function _pagarTasaReventa(address _from) internal{
         require(msg.value > 0, "ERC721: Insufficient payment");  
         payable(_from).transfer(msg.value - (msg.value * (porcentajeReventa / 100)));
         payable(owner()).transfer(msg.value * (porcentajeReventa / 100));
     }
 
-    function useTicket(uint _tokenId) external returns (bool) {
+    function useTicket(uint _tokenId, uint _idEvento) external returns (bool) {
         require(_exists(_tokenId), "ERC721: Ticket does not exist");
         require(!ticketUsed(_tokenId), "ERC721: Ticket has already been used");   
-        require(getEvent(_tokenId) == _idEvento, "ERC721: Not a ticket from the event"); 
+        require(getEvent(_tokenId).idEvento == _idEvento, "ERC721: Not a ticket from the event"); 
         require(getOwner(_tokenId) == msg.sender, "ERC721: Not the ticket owner"); // NO SE BIEN 
 
         _entradaUtilizada[_tokenId] = true;    
@@ -171,25 +174,5 @@ contract NFT is ERC721URIStorage, Ownable, ReentrancyGuard {
     function getTotalPrice(uint _tokenId) public view returns(uint) {
         return ((entradas[_tokenId].precio*(100 + porcentajeReventa))/100);        
     }
-
-
-    // function getTicketAttributes(uint256 _tokenId)
-    //     external
-    //     view
-    //     returns (
-    //         string memory,
-    //         uint,
-    //         uint
-    //     )
-    // {
-    //     require(_exists(_tokenId), "Ticket does not exist");
-        
-    //     Entrada memory attributes = _entradas[_tokenId];
-    //     return(
-    //         attributes.tipoEntrada,
-    //         attributes.numAsiento,
-    //         attributes.precio,
-    //     );
-    // }
 
 }
