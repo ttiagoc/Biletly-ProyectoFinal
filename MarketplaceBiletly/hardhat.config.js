@@ -1,4 +1,5 @@
 require("@nomiclabs/hardhat-waffle");
+require("@nomiclabs/hardhat-ethers"); //nuevo
 const Dotenv = require('dotenv-webpack');
 
 // const fs = require('fs')
